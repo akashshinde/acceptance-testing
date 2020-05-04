@@ -19,3 +19,8 @@ class Kubectl(common.CommandRunner):
         cmd += ' | grep ^'+pod_prefix+' | awk \'{print $2 "--" $3}\''
         cmd += ' | grep -E "^([1-9][0-9]*)/\\1--Running" | wc -l` == '+num_expected+' ]'
         self.run_command(kind_auth_wrap(cmd))
+
+    def daemonset_is_ready(self, namespace, ds_name):
+        cmd = 'kubectl rollout status ds '+ds_name+' --namespace='+namespace
+        cmd += ' | grep successfully'
+        self.run_command(kind_auth_wrap(cmd))

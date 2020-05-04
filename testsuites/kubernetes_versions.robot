@@ -92,8 +92,6 @@ Verify --wait flag works as expected
 
     Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-ext-    3
     Kubectl.Return code should be   0
-    Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-fluentd-es-    6
-    Kubectl.Return code should be   0
     Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-v1-    3
     Kubectl.Return code should be   0
     Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-v1beta1-    3
@@ -101,6 +99,9 @@ Verify --wait flag works as expected
     Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-v1beta2-    3
     Kubectl.Return code should be   0
     Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-web-   3
+    Kubectl.Return code should be   0
+
+    Kubectl.Daemonset is ready   default    wait-flag-good-nginx-fluentd-es
     Kubectl.Return code should be   0
 
     # Delete good release
@@ -123,8 +124,6 @@ Verify --wait flag works as expected
 
     Kubectl.Pods with prefix are running    default    wait-flag-bad-nginx-ext-    3
     Kubectl.Return code should not be   0
-    Kubectl.Pods with prefix are running    default    wait-flag-bad-nginx-fluentd-es-    1
-    Kubectl.Return code should not be   0
     Kubectl.Pods with prefix are running    default    wait-flag-bad-nginx-v1-    3
     Kubectl.Return code should not be   0
     Kubectl.Pods with prefix are running    default    wait-flag-bad-nginx-v1beta1-    3
@@ -134,6 +133,8 @@ Verify --wait flag works as expected
     Kubectl.Pods with prefix are running    default    wait-flag-bad-nginx-web-   3
     Kubectl.Return code should not be   0
 
+    Kubectl.Daemonset is ready   default    wait-flag-good-nginx-fluentd-es
+    Kubectl.Return code should not be   0
     # Delete bad release
     Should pass  helm delete wait-flag-bad
 
