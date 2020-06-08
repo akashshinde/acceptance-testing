@@ -2,7 +2,6 @@
 
 function create_cluster(){
    echo "No need to create cluster since kubeconfig is provided externally"
-   echo "TODO: Setup persistent volume"
 }
 
 function delete_cluster() {

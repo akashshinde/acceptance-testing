@@ -1,6 +1,7 @@
 import os
 import subprocess
 import time
+from robot.api import logger
 
 NOW = time.strftime('%Y%m%d%H%M%S')
 
@@ -31,6 +32,7 @@ class CommandRunner(object):
             raise AssertionError('Output contains "%s".' % s)
 
     def run_command(self, command, detach=False):
+        logger.debug("command to run : " + command)
         process = subprocess.Popen(['/bin/bash', '-xc', command],
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)

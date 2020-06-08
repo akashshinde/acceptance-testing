@@ -38,6 +38,7 @@ Suite Teardown    Suite Teardown
 *** Variables ***
 ${provider}   kind
 ${metadata}   1.14.6
+${chart}      nginx
 
 *** Test Cases ***
 #Helm works with Kubernetes 1.16.1
@@ -55,8 +56,8 @@ Test Helm on Kubernetes version
     Set Global Variable     ${cluster}
     ${ctx}=    Call Method     ${cluster}     setup_cluster
 
-    Should pass  kubectl get nodes
-    Should pass  kubectl get pods --namespace=kube-system
+    Kubectl.Is Nodes Up
+    # Should pass  kubectl get pods --namespace=kube-system
     
     # Add new test cases here
     Verify --wait flag works as expected
@@ -65,7 +66,7 @@ Test Helm on Kubernetes version
 Verify --wait flag works as expected
     # Install nginx chart in a good state, using --wait flag
     Sh.Run  helm delete wait-flag-good
-    Helm.Install test chart    wait-flag-good    nginx   --wait --timeout=60s
+    Helm.Install test chart    wait-flag-good    ${chart}   --wait --timeout=60s
     Helm.Return code should be  0
 
     # Make sure everything is up-and-running
@@ -81,7 +82,7 @@ Verify --wait flag works as expected
 
     Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-ext-    3
     Kubectl.Return code should be   0
-    Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-fluentd-es-    1
+    Kubectl.Deamon Set Pods With Prefix    default    wait-flag-good-nginx-fluentd-es-    
     Kubectl.Return code should be   0
     Kubectl.Pods with prefix are running    default    wait-flag-good-nginx-v1-    3
     Kubectl.Return code should be   0
@@ -93,11 +94,10 @@ Verify --wait flag works as expected
     Kubectl.Return code should be   0
 
     # Delete good release
-    Should pass  helm delete wait-flag-good
+    Helm.Delete chart     wait-flag-good
 
     # Install nginx chart in a bad state, using --wait flag
-    Sh.Run  helm delete wait-flag-bad
-    Helm.Install test chart    wait-flag-bad   nginx   --wait --timeout=60s --set breakme=true
+    Helm.Install test chart    wait-flag-bad   ${chart}   --wait --timeout=60s --set breakme=true
 
     # Install should return non-zero, as things fail to come up
     Helm.Return code should not be  0
@@ -124,7 +124,7 @@ Verify --wait flag works as expected
     Kubectl.Return code should not be   0
 
     # Delete bad release
-    Should pass  helm delete wait-flag-bad
+    Helm.Delete chart    wait-flag-bad
 
 Suite Setup
     Kind.Cleanup all test clusters

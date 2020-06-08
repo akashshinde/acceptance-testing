@@ -3,6 +3,7 @@ import time
 import os
 from robot.api import logger
 import configs
+from ClusterProvider import auth_wrap
 
 DOCKER_HUB_REPO = 'kindest/node'
 CLUSTER_PREFIX = 'helm-acceptance-test'
@@ -18,10 +19,6 @@ KIND_POD_EXPECTED_NUMBER = 8
 
 LAST_CLUSTER_NAME = 'UNSET'
 LAST_CLUSTER_EXISTING = False
-
-
-def kind_auth_wrap(cmd):
-    return configs.AUTH_COMMAND+' && '+cmd
 
 
 class Kind(common.CommandRunner):
@@ -69,7 +66,7 @@ class Kind(common.CommandRunner):
         seconds_waited = 0
         while True:
             cmd = 'kubectl get nodes | tail -n1 | awk \'{print $2}\''
-            self.run_command('set +x && '+kind_auth_wrap(cmd))
+            self.run_command('set +x && ' + auth_wrap(cmd))
             status = self.stdout.replace('\n', '').strip()
             logger.console('Cluster node status: '+status)
             if status == 'Ready':
@@ -83,7 +80,7 @@ class Kind(common.CommandRunner):
         seconds_waited = 0
         while True:
             cmd = 'kubectl get pods -n kube-system | grep \'1\/1\' | wc -l'
-            self.run_command('set +x && '+kind_auth_wrap(cmd))
+            self.run_command('set +x && ' + auth_wrap(cmd))
             num_ready = int(self.stdout.replace('\n', '').strip())
             logger.console('Num pods ready: '+str(num_ready) +
                            '/'+str(KIND_POD_EXPECTED_NUMBER))
